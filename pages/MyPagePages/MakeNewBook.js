@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {firebase_db} from '../../firebaseConfig';
 import firebase from 'firebase/app'
-import Constants from 'expo-constants'
+//import Constants from 'expo-constants'
 import {NavigationContainer} from '@react-navigation/native';
 //import { add, Value } from 'react-native-reanimated';
 import { OPENSSL_VERSION_NUMBER } from 'constants';
@@ -45,9 +45,17 @@ const MakeNewBook = ({navigation,route}) => {
       setImage(result.uri);
     }
   };
- 
 
-  const user_id = Constants.installationId;
+  var user = firebase.auth().currentUser;
+  var  user_uid
+  
+  if (user != null) {
+  
+    user_uid = user.uid;  
+  }
+
+  console.log(user_uid)
+
   const bookTitle_a = useRef(null);
   const [text1,setText1] = useState('');
   const [data,setData] = useState(''); 
@@ -69,7 +77,7 @@ const MakeNewBook = ({navigation,route}) => {
     .ref('book/'+bookKey)
     .set({
       bookTitle: bookTitle,
-      user_id: user_id,
+      user_uid: user_uid,
       chapters: chapters,
       intro: intro,
       regdate: new Date().toString(),
@@ -82,11 +90,11 @@ const MakeNewBook = ({navigation,route}) => {
 
 
   useEffect(()=>{
-    console.log("hello")
+   // console.log("hello")
 
     var changeDataRef = firebase.database().ref('book/').orderByChild("regdate");
     changeDataRef.on("value",(snapshot) =>{
-      console.log(snapshot)
+     // console.log(snapshot)
       const bookKey=snapshot.bookKey;
       const tmp = [];
 
@@ -94,7 +102,7 @@ const MakeNewBook = ({navigation,route}) => {
 
         tmp.unshift({
           bookKey:child.bookKey,
-          user_id:child.val().user_id,
+          user_uid:child.val().user_uid,
           bookTitle:child.val().bookTitle,
           chapters:child.val().chapters,
           intro:child.val().intro,
@@ -103,7 +111,7 @@ const MakeNewBook = ({navigation,route}) => {
         })
       })
 
-      console.log(tmp);
+    //  console.log(tmp);
       setData(tmp);
     })
 

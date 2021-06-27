@@ -4,6 +4,8 @@ import { StatusBar } from 'expo-status-bar';
 import { firebase_db } from '../../firebaseConfig';
 import Constants from 'expo-constants';
 import Icon from 'react-native-vector-icons/Ionicons';
+import firebase from 'firebase/app'
+
 const MyBookItem = ({navigation, myitem}) => {
     return (
         <TouchableHighlight onPress={()=>{navigation.navigate('MyBook', {myitem: myitem})}}>
@@ -28,10 +30,20 @@ const MyPage = ({navigation, route}) => {
                 //console.log(temp);
             })
     }, [])
+
+    var user = firebase.auth().currentUser;
+    var  user_uid
+    
+    if (user != null) {
+    
+      user_uid = user.uid;  
+    }
+  
+    console.log(user_uid)
+
     function renderMyBook() {
         //console.log(books);
-        const user_id = Constants.installationId;
-        const filteredList = myBook.filter(filteredMyBook => filteredMyBook.user_id == user_id);
+        const filteredList = myBook.filter(filteredMyBook => filteredMyBook.user_uid == user_uid);
         const list = filteredList.map(myitem =>
             <MyBookItem
                 navigation = {navigation}

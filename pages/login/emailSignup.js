@@ -1,264 +1,185 @@
 
 
-// import "firebase/auth";
-// import {useState} from 'react';
-// import React, { Component } from 'react';
-// import { View, Text, StyleSheet } from 'react-native';
-// import {Container,Content, Header, Form, Input, Item, Button, Label,} from 'native-base'
-// import firebase from 'firebase/app';
-// import {firebase_db} from '../../firebaseConfig';
+import "firebase/auth";
+import {useState} from 'react';
+import React, { Component } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import {Container,Content, Header, Form, Input, Item, Button, Label,} from 'native-base'
+import firebase from 'firebase/app';
+import {firebase_db} from '../../firebaseConfig';
 
-// const firebaseConfig = {
-//     apiKey: "AIzaSyCFUcLFu6UnJgbX1QHYyAuqzn03dR9oLXM",
-//       authDomain: "webrokeup.firebaseapp.com",
-//       databaseURL: "https://webrokeup-default-rtdb.asia-southeast1.firebasedatabase.app/",
-//       projectId: "webrokeup",
-//       storageBucket: "webrokeup.appspot.com",
-//       messagingSenderId: "514543696025",
-//       appId: "1:514543696025:web:c3e3f5360191728c49a008",
-//       measurementId: "G-6ECY7LWR9G"
-//   };
+const firebaseConfig = {
+    apiKey: "AIzaSyCFUcLFu6UnJgbX1QHYyAuqzn03dR9oLXM",
+      authDomain: "webrokeup.firebaseapp.com",
+      databaseURL: "https://webrokeup-default-rtdb.asia-southeast1.firebasedatabase.app/",
+      projectId: "webrokeup",
+      storageBucket: "webrokeup.appspot.com",
+      messagingSenderId: "514543696025",
+      appId: "1:514543696025:web:c3e3f5360191728c49a008",
+      measurementId: "G-6ECY7LWR9G"
+  };
   
-//   if (firebase.apps.length==0){
-//     firebase.initializeApp(firebaseConfig);
-//   }
+  if (firebase.apps.length==0){
+    firebase.initializeApp(firebaseConfig);
+  }
 
-// //이메일 형식 맞추는 함수
-//   function isEmail(asValue) {
-//     var regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
-//     return regExp.test(asValue); // 형식에 맞는 경우 true 리턴
-//   }
 
-  
-// // firebase에 있는 current user 가져와서 중복확인 하고싶다
+
+
+   class emailSignup extends React.Component {
+
+    constructor(props) {
+      super(props);
+      this.state = {
+        email: "",
+        password: "",
+        confirmPassword:"",
+      };
+    }
+
+   
+
+// 비밀번호랑 비밀번호 확인이 일치하면 형식까지 맞는지 확인하고 true 리턴하는 함수 
+checkPassword= (password,confirmPassword)=> {
+    if (password !== confirmPassword) {
+        alert("비밀번호가 일치하지 않습니다!");}
+        
+    else{
+      //  isPassword(password) {
+            var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,10}$/; //  8 ~ 10자 영문, 숫자 조합
+            return regExp.test(password); // 형식에 맞는 경우 true 리턴}
+               }
+}
+
+// 이메일 형식이 맞다면 firebase 기존 유저와 중복인지 분석하는 함수!
+// 어떻게 중복 확인 하는 함수 세울지 모르겠음 ㅠㅠ
+// current user 불러오는 함수로 데이터 가져오고 일치하는지 확인하고 싶었는데 current user가 없다고 계속 에러가 남 
+//이렇게...
 //   const getLoggedInUser= () => {
-//     const currentUser = App.firebase.auth().currentUser
+//     currentUser = firebase.auth().currentUser;
+
 //     if (currentUser) {
 //       return {
-//         email: currentUser.email,
-//         userId: currentUser.uid,
-//         isEmailVerified: currentUser.emailVerified
+//         currentUserEmail: currentUser.email,
 //       }
 //     } else {
 //       return undefined
 //     }
-//   },
-
-//    class emailSignup extends React.Component {
-
-//     constructor(props) {
-//       super(props);
-//       this.state = {
-//         email: "",
-//         password: "",
-//         confirmPassword:"",
-//       };
-//     }
-
-   
-    
-//       //위에서 가져온 currentUser와 지금 입력한 emailUser를 비교해 중복확인 실제로 돌리는 함수
-//       //email user는 아래 onSignin에서 정의했는데 제대로 안된것같다ㅠㅠ 이것은 google login 함수 보고 따라한건데 모르겠다..
-//  isUserEqual = (emailUser, currentUser) => {
-
-//   if (currentUser) {
-//     var providerData = currentUser.providerData;
-//     for (var i = 0; i < providerData.length; i++) {
-//       if (
-//         providerData[i].providerId ===
-//           firebase.auth.EmailAuthProvider.PROVIDER_ID &&
-//         providerData[i].uid === emailUser.getBasicProfile().getId()
-//       ) {
-//         // We don't need to reauth the Firebase connection.
-//         return true;
-//       }
-//     }
 //   }
-//   return false;
-// };
+// [Error: The email address is already in use by another account.] 이미 알아서 alert가 뜨고 있는데 이걸 유져한테 보일 방법이 있을까??
 
-// //비밀번호 형식 확인
-// isPassword(asValue) {
-//   var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,10}$/; //  8 ~ 10자 영문, 숫자 조합
-//   return regExp.test(asValue); // 형식에 맞는 경우 true 리턴
-// }
+checkEmail=(email)=>{
+        var regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+        return regExp.test(email); // 형식에 맞는 경우 true 리턴
+      //여기에 중복확인 함수 넣고 싶다....
+}
 
-// //  이메일 형식 확인 함수 isEmail 가지고 와서 실제로 확인, 너무 빨리 확인되지 않고 시간이 지나서 확인할 수 있도록 시간정하기? 아니면 중복확인 버튼을 만들어야하나?
-//       checkValidEmail = () => {
-//         let timer;
-//         if (timer) {
-//           clearTimeout(timer);
-//         }
-//         timer = setTimeout(() => {
-//           if (!isEmail(this.state.email)) {
-//             this.setState({ isValidEmail: false });
-//             alert ("유효한 이메일이 아닙니다.")
-//           } else {
-//             this.setState({ isValidEmail: true });
-//           }
-//         }, 500);
-//       };
-
-
-
-//       //회원가입이후 자동적으로 로그인을 시켜주고, userdata, uid를 firebase realtime database에 저장 
-//       onSignIn = emailUser => {
-//         console.log('Auth Response', emailUser);
-//         // We need to register an Observer on Firebase Auth to make sure auth is initialized.
-//         var unsubscribe = firebase.auth().onAuthStateChanged(
-//           function(firebaseUser) {
-//             unsubscribe();
-//             // Check if we are already signed-in Firebase with the correct user.
-           
-//               var credential = firebase.auth.EmailAuthProvider.credential(
-//                 email,password
-//               );
-//               firebase
-//                 .auth()
-//                 .signInAndRetrieveDataWithCredential(credential)
-//                 .then(function(result) {
-//                   console.log('user signed in ');
-          
-//                         firebase
-//                       .database()
-//                       .ref('/users/' + result.user.email)
-//                       .set({
-//                         uid: result.user.uid,
-//                         name: result.additionalUserInfo.name,
-//                         created_at: Date.now()
-//                       })
-//                       .then(function(snapshot) {
-//                         // console.log('Snapshot', snapshot);
-//                       });
-//                   }) 
-//                 .catch(function(error) {
-//                   // Handle Errors here.
-//                   var errorCode = error.code;
-//                   var errorMessage = error.message;
-//                   // The email of the user's account used.
-//                   var email = error.email;
-//                   // The firebase.auth.AuthCredential type that was used.
-//                   var credential = error.credential;
-//                   // ...
-//                 }.bind(this)
-//         )
-//               })};
-
-//       //회원가입 들어와서 이메일 중복 확인 -> 중복이 아니라면-> 비밀번호 일치확인 -> 일치하면-> 이메일 유효성 확인-> 비밀번호 유효성확인 -> 회원가입
-//       //-> 회원가입 성공하면 로그인 -> onsignin 함수에서 데이터 정보 저장
+      handleSignUp = async(email,password,confirmPassword) => {
      
-//       handleSignUp = (email,password,confirmPassword) => {
-     
-
-//         if (!getLoggedInUser(email, currentUser)) {
-//           alert("이미 계정이 있습니다! 로그인 해주세요")
-     
-//         }
-//         else{
-
-//       try {
-  
-//           const { password, confirmPassword } = this.state;
-//           if (password !== confirmPassword) {
-//             alert("비밀번호가 일치하지 않습니다!");}
-//             else{
-//               this.checkValidEmail();   
-//               this.isPassword();
-//         const { email, password } = this.state
-//         firebase.auth()
-//             .createUserWithEmailAndPassword(email, password)
-//             .catch(error => console.log(error))
-//          //   console.log(currentUser)
-  
-//           const user = firebase.auth().currentUser
-//             }
-
-//           if (result.type === 'success') {
-//               const credential = firebase.auth.EmailAuthProvider.credential(email,password);
-//               firebase
-//               .auth()
-//               .signInWithCredential(credential)
+      try {
     
-//               onSignIn(result);
-//               return result.email;
-    
-//             }else {
-//               return { cancelled: true };
-//             }
-//           }catch (error) {
-//             console.log(error.toString(error));
-//           }
-//         }}
-    
+        await this.checkEmail()
+        await this.checkPassword()
 
+        // alert나고도 바로 회원가입이 되는 문제... 이게 둘다 true로 리턴되면 아래 함수를 시행하라는 코드는 어떻게 짜나요.?
 
-   
+        firebase.auth()
+            .createUserWithEmailAndPassword(email, password)
+            .catch(error => console.log(error))
+        const credential = firebase.auth().createUserWithEmailAndPassword(email, password)
 
-//     render () {
-//       return(
-//           <Container style={styles.container}>
-//               <Form>
+        // 회원가입 후 발급받은 credential로 바로 로그인하고 database에 저장까지
+        // Error: signInWithCredential failed: First argument "credential" must be a valid credential.이렇게뜸 
+        // 그럼에도 바로 로그인 되는거보니 필요없는 함수인가...? 
+        //저장은 한번도 성공 못함...
+        firebase.auth()
+                .signInWithCredential(credential)
+                .then(function(result) {
+                  console.log('user signed in ');
+                    firebase
+                      .database()
+                      .ref('/users/' + result.user.uid)
+                      .set({
+                        email: result.user.email,
+                        user_uid:result.user.uid,
+                        created_at: Date.now()
+                      })
+                      .then(function(snapshot) {
+                        console.log('Snapshot', snapshot);
+                      });
+                 
 
-//                   <Item floatingLabel>
-//                       <Label>Email</Label>
-//                       <Input
-//                        autoCorrect={false}
-//                        autoCapital="none"
-//                        onChangeText={(email)=>this.setState({email})}/>
+        })}
+        
+        catch (error) {
+            console.log(error.toString(error));
+          }
+        }
+
+    render () {
+      return(
+          <Container style={styles.container}>
+              <Form>
+
+                  <Item floatingLabel>
+                      <Label>Email</Label>
+                      <Input
+                       autoCorrect={false}
+                       autoCapital="none"
+                       onChangeText={(email)=>this.setState({email})}/>
                       
-//                   </Item>
-//                   <Item floatingLabel>
-//                       <Label>Password</Label>
-//                       <Input
-//                       secureTextEntry={true}
-//                        autoCorrect={false}
-//                        autoCapital="none"
-//                        onChangeText={(password)=>this.setState({password})}/>
+                  </Item>
+                  <Item floatingLabel>
+                      <Label>Password</Label>
+                      <Input
+                      secureTextEntry={true}
+                       autoCorrect={false}
+                       autoCapital="none"
+                       onChangeText={(password)=>this.setState({password})}/>
                        
                       
-//                   </Item>
-//                   <Item floatingLabel>
-//                       <Label>password confirm</Label>
-//                       <Input
-//                        autoCorrect={false}
-//                        autoCapital="none"
-//                        onChangeText={(confirmPassword)=>this.setState({confirmPassword})}/>
+                  </Item>
+                  <Item floatingLabel>
+                      <Label>password confirm</Label>
+                      <Input
+                       autoCorrect={false}
+                       autoCapital="none"
+                       onChangeText={(confirmPassword)=>this.setState({confirmPassword})}/>
                       
-//                   </Item>
+                  </Item>
                  
   
-//                   <Button style={{marginTop:10}}
-//                   full
-//                   rounded
-//                   primary
-//                   onPress={()=>this.handleSignUp(this.state.email,this.state.password, this.state.confirmPassword)}  
-//                   >
-//                       <Text>Sign Up</Text>
-//                   </Button>
+                  <Button style={{marginTop:10}}
+                  full
+                  rounded
+                  primary
+                  onPress={()=>this.handleSignUp(this.state.email,this.state.password, this.state.confirmPassword)}  
+                  >
+                      <Text>Sign Up</Text>
+                  </Button>
 
-//                   <Button style={{marginTop:10}}
-//                   full 
-//                   rounded
-//                   success
-//                   onPress={()=>{navigation.navigate('emailLogin')}}          
-//                   >
-//                       <Text>이미 계정이 있으시다면! 로그인</Text>
-//                   </Button> 
-//               </Form>
-//           </Container>
-//       )
-//   };
-//   }
+                  <Button style={{marginTop:10}}
+                  full 
+                  rounded
+                  success
+                  onPress={()=>{navigation.navigate('emailLogin')}}          
+                  >
+                      <Text>이미 계정이 있으시다면! 로그인</Text>
+                  </Button> 
+              </Form>
+          </Container>
+      )
+  };
+  }
   
 
 
-//   const styles = StyleSheet.create({
-//     container: {
-//       flex: 1,
-//       justifyContent: 'center',
-//     }
-// //   });
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+    }
+  });
 
-// export default emailSignup;
+export default emailSignup;
 
-//extra message

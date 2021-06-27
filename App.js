@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginScreen from './pages/login/LoginScreen';
 import LoadingScreen from './pages/login/LoadingScreen';
-// import emailSignup from './pages/login/emailSignup';
+import emailSignup from './pages/login/emailSignup';
 import MyPage from './pages/MyPagePages/MyPage';
 import emailLogin from './pages/login/emailLogin';
 const Stack = createStackNavigator();
@@ -39,12 +39,12 @@ const App= () =>{
         name="TabStackScreen"
         component={TabStackScreen}
       />
-          {/* <Stack.Screen
+          <Stack.Screen
         name="emailSignup"
         component={emailSignup}
         options={{headerShown: false}}
 
-      /> */}
+      />
 
 <Stack.Screen
         name="emailLogin"

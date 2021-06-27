@@ -79,6 +79,7 @@ const LoginScreen  = ({navigation,route}) => {
                     profile_picture: result.additionalUserInfo.profile.picture,
                     first_name: result.additionalUserInfo.profile.given_name,
                     last_name: result.additionalUserInfo.profile.family_name,
+                    user_uid:result.user.uid,
                     created_at: Date.now()
                   })
                   .then(function(snapshot) {
@@ -195,10 +196,10 @@ try{
           title="Facebook 으로 시작하기"
           onPress={signInWithFacebook}
           />
-           {/*         <Button
+                   <Button
           title="이메일로 시작하기"
           onPress={()=>{navigation.navigate('emailSignup')}}          
-          /> */}
+          />
       </View>
     );
   
