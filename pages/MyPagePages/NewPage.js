@@ -31,6 +31,7 @@ const NewPage = ({navigation,route}) => {
     firebase_db
       .ref(`/book/${bookKey}/chapters/` + chapterKey)
       .set({
+        chapterKey: chapterKey,
         chapterTitle: chapterTitle,
         mainText: mainText,
         regdate: new Date().toString()

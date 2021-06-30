@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { firebase_db } from '../../firebaseConfig';
 const MyChapterItem = (props) => {
-    const {navigation, chapters, chapterTitle, myitem} = props;
+    const {navigation, chapters, chapterTitle, myitem, bookKey, chapterKey} = props;
     return (
         <View>
-            <TouchableOpacity style={styles.bookIndexOne} onPress={()=>{navigation.navigate('MyArticle', {myitem: myitem, chapters:chapters, navigation:navigation, chapterTitle:chapterTitle})}}>
+            <TouchableOpacity style={styles.bookIndexOne} onPress={()=>{navigation.navigate('MyArticle', {myitem: myitem, chapters:chapters, navigation:navigation, chapterTitle:chapterTitle, bookKey:bookKey, chapterKey:chapterKey})}}>
                 <Text style={styles.bookIndexOneTitle}>{chapters.chapterTitle}</Text>  
                 <Text style={styles.bookIndexOnePunchLine}>{chapters.mainText}</Text>
                 <Text style={styles.bookIndexText}>{chapters.regdate}</Text>
@@ -15,13 +16,19 @@ const MyChapterItem = (props) => {
     )
 }
 const MyBook = ({navigation, route}) =>{
-    const {myitem} = route.params;
+    const {myitem, bookKey} = route.params;
     const intro = Object.values(myitem.intro)
     const chapters = Object.values(myitem.chapters)
-    console.log(intro)
+    const subChapters = Object.values(chapters);
+
+
+    // console.log(intro)
+        
     const renderMyChapter = () => {
-        console.log("renderMyChapter실행중")
-        console.log(chapters)
+        // console.log("renderMyChapter실행중")
+        // console.log(chapters)
+            
+
         const isMyitem = (typeof myitem !== 'undefined');
             if (isMyitem == false) {
                 return null; 
@@ -31,8 +38,9 @@ const MyBook = ({navigation, route}) =>{
                 return null; 
             }
             // console.log(myitem.chapters)
-        const subChapters = Object.values(chapters)
-        console.log(subChapters)
+        const chaptersArray = Object.keys(myitem.chapters);
+        const chapterKey = chaptersArray.toString();
+
         return(
             subChapters.map(chapters=>{
                 return(
@@ -40,12 +48,18 @@ const MyBook = ({navigation, route}) =>{
                         navigation = {navigation}
                         chapters = {chapters}
                         chapterTitle = {chapters.chapterTitle}
+                        bookKey = {bookKey}
+                        chapterKey = {chapterKey}
                         myitem = {myitem}
                     />
                 )
             })
         )
+
     }
+
+
+
     return (
             <ScrollView style={styles.container}>
                 <View  style={styles.bookCoverContainer}>
@@ -63,7 +77,7 @@ const MyBook = ({navigation, route}) =>{
                     {renderMyChapter()}
                 </View>
                 <TouchableOpacity style = {{alignSelf: "center", padding: 20, paddingHorizontal: 150,backgroundColor: "#FE8D6F"}}
-                    onPress = {()=>navigation.navigate("NewPage", {myitem:myitem, chapters:chapters})}>
+                    onPress = {()=>navigation.navigate("NewPage", {myitem:myitem, chapters:chapters, bookKey:bookKey})}>
                     <Text style = {{fontWeight:"600"}}>새로운 챕터 만들기</Text>
                 </TouchableOpacity>
             </ScrollView>

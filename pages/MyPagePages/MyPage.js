@@ -6,9 +6,9 @@ import Constants from 'expo-constants';
 import Icon from 'react-native-vector-icons/Ionicons';
 import firebase from 'firebase/app'
 
-const MyBookItem = ({navigation, myitem}) => {
+const MyBookItem = ({navigation, myitem, bookKey}) => {
     return (
-        <TouchableHighlight onPress={()=>{navigation.navigate('MyBook', {myitem: myitem})}}>
+        <TouchableHighlight onPress={()=>{navigation.navigate('MyBook', {myitem: myitem, bookKey: bookKey})}}>
             <View>
                 <Text>{myitem.bookTitle}</Text>
                 <Image style={styles.bookButtonImage} source={{uri:myitem.image}} />
@@ -18,19 +18,22 @@ const MyBookItem = ({navigation, myitem}) => {
 }
 const MyPage = ({navigation, route}) => {
     const [myBook, setMyBook] = useState([]);
+
+
+
     useEffect(() => {
         let temp = [];
         let data = firebase_db.ref('book/')
             .on('value', (snapshot) => {
-                //console.log(snapshot);
                 snapshot.forEach((child) => {
                     temp.push(child.val());
                 })
                 setMyBook(temp);
-                //console.log(temp);
             })
     }, [])
 
+
+    
     var user = firebase.auth().currentUser;
     var  user_uid
     
@@ -39,17 +42,34 @@ const MyPage = ({navigation, route}) => {
       user_uid = user.uid;  
     }
   
-    console.log(user_uid)
+    // console.log(user_uid)
 
     function renderMyBook() {
-        //console.log(books);
+        console.log(myBook)
+        
+        // const BookKey = Object.keys(myBook).toString();
+        // console.log(BookKey);
+        // console.log(list);
+
+    //     useEffect     let bookKeyRef = firebase_db.ref('book/')
+    // // console.log(bookKeyRef);
+    // // const bookKey = Object.values(key) 
+    // // console.log(bookKey);
+    // bookKeyRef.on('value', (snapshot) => {
+    //     const book = snapshot.val()
+    //     console.log(book) // I get there onlye once !
+    // },
+
         const filteredList = myBook.filter(filteredMyBook => filteredMyBook.user_uid == user_uid);
         const list = filteredList.map(myitem =>
             <MyBookItem
                 navigation = {navigation}
-                myitem = {myitem}/>)
+                myitem = {myitem}
+                bookKey = {myitem.bookKey}/>)
         return list;
+    
         }
+
 return (
     <View style={styles.container}>
         <View style={styles.profileContainer}>
